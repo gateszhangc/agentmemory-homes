@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>agentmemory — #1 Persistent Memory for AI Coding Agents Based on Real-World Benchmarks</title>
+  <meta name="description" content="agentmemory is the #1 persistent memory for AI coding agents. 95.2% retrieval R@5, 92% fewer tokens, 53 MCP tools, 12 auto hooks, 0 external DBs. Works with Claude Code, Cursor, Gemini CLI, Codex CLI, and any MCP client.">
+  <meta name="keywords" content="agent memory, AI coding agents, persistent memory, Claude Code memory, Cursor memory, MCP memory, coding agent memory, AI memory, agentmemory, iii engine, semantic search, knowledge graph, benchmark">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Rohit G.">
+  <meta property="og:title" content="agentmemory — Persistent Memory for AI Coding Agents">
+  <meta property="og:description" content="95.2% retrieval R@5, 92% fewer tokens, 53 MCP tools, 12 auto hooks. #1 persistent memory for AI coding agents.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://agent-memory.dev">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="agentmemory — Persistent Memory for AI Coding Agents">
+  <meta name="twitter:description" content="95.2% retrieval R@5, 92% fewer tokens. #1 persistent memory for AI coding agents.">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card-hover: #1a1a2e;
+      --border: #1e1e32;
+      --text: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #6366f1;
+      --accent-light: #8b5cf6;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --green: #22c55e;
+      --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+      --gradient-text: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+      --radius: 12px;
+      --radius-lg: 16px;
+      --max-width: 1200px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+    /* Navigation */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { height: 32px; }
+    .nav-logo span { font-weight: 700; font-size: 18px; color: var(--text); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px; border-radius: 8px;
+      background: var(--gradient); color: #fff; font-weight: 600; font-size: 14px;
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+    .mobile-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; }
+
+    /* Hero */
+    .hero {
+      padding: 160px 0 100px; text-align: center;
+      background: radial-gradient(ellipse at 50% 0%, var(--accent-glow) 0%, transparent 50%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 100px;
+      background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
+      font-size: 13px; font-weight: 500; color: var(--accent-light); margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.03em; margin-bottom: 20px;
+    }
+    .hero h1 span { background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px); color: var(--text-secondary);
+      max-width: 680px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .number {
+      font-size: 32px; font-weight: 800;
+      background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-stat .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .hero-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px; border-radius: 10px;
+      background: var(--gradient); color: #fff; font-weight: 600; font-size: 16px;
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px; border-radius: 10px;
+      background: var(--bg-card); color: var(--text); font-weight: 600; font-size: 16px;
+      text-decoration: none; border: 1px solid var(--border); transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--accent); }
+
+    /* Sections */
+    section { padding: 100px 0; }
+    .section-label {
+      display: inline-block; font-size: 13px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent-light); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 16px; color: var(--text-secondary); max-width: 600px; line-height: 1.7;
+    }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header .section-desc { margin: 0 auto; }
+
+    /* Overview */
+    .overview-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px; max-width: 900px; margin: 0 auto;
+    }
+    .overview-card {
+      padding: 32px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border);
+      text-align: center; transition: all 0.3s;
+    }
+    .overview-card:hover { background: var(--bg-card-hover); border-color: var(--accent); transform: translateY(-2px); }
+    .overview-card .icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; font-size: 22px;
+      background: rgba(99, 102, 241, 0.1);
+    }
+    .overview-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .overview-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* Features */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      padding: 32px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .feature-card:hover { background: var(--bg-card-hover); border-color: var(--accent); transform: translateY(-2px); }
+    .feature-card .icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 20px;
+      background: rgba(99, 102, 241, 0.1);
+    }
+    .feature-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* How It Works */
+    .pipeline {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 40px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2;
+      overflow-x: auto; white-space: pre;
+      color: var(--text-secondary);
+    }
+    .pipeline .highlight { color: var(--accent-light); font-weight: 500; }
+    .pipeline .arrow { color: var(--text-muted); }
+    .steps { display: grid; gap: 16px; margin-top: 48px; }
+    .step {
+      display: grid; grid-template-columns: 40px 1fr;
+      gap: 16px; padding: 20px 24px;
+      border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border);
+      align-items: start;
+    }
+    .step-num {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px;
+      background: var(--gradient); color: #fff;
+    }
+    .step h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .step p { font-size: 14px; color: var(--text-secondary); }
+
+    /* Benchmarks */
+    .benchmark-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table thead { background: var(--bg-card); }
+    .benchmark-table th {
+      padding: 14px 20px; text-align: left; font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .benchmark-table td {
+      padding: 14px 20px; font-size: 14px; color: var(--text);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .benchmark-table tr:last-child td { border-bottom: none; }
+    .benchmark-table td:first-child { font-weight: 600; }
+    .benchmark-highlight { color: var(--green); font-weight: 600; }
+    .benchmark-sub { color: var(--text-muted); font-size: 12px; }
+    .benchmark-note {
+      margin-top: 16px; padding: 16px 20px;
+      border-radius: var(--radius); background: rgba(99, 102, 241, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      font-size: 13px; color: var(--text-secondary);
+    }
+
+    /* Agents / Integration Grid */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .agent-item {
+      padding: 16px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      text-align: center; font-size: 13px; font-weight: 500;
+      transition: all 0.2s;
+    }
+    .agent-item:hover { background: var(--bg-card-hover); border-color: var(--accent); }
+
+    /* MCP Tools */
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .tool-item {
+      padding: 16px 20px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      font-size: 13px; font-family: 'JetBrains Mono', monospace;
+      transition: all 0.2s;
+    }
+    .tool-item:hover { border-color: var(--accent); }
+    .tool-item .tool-name { color: var(--accent-light); font-weight: 500; }
+    .tool-item .tool-desc { color: var(--text-muted); font-size: 12px; margin-top: 4px; font-family: 'Inter', sans-serif; }
+
+    /* Comparison Table */
+    .compare-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .compare-table thead { background: var(--bg-card); }
+    .compare-table th {
+      padding: 14px 20px; text-align: left; font-size: 12px; font-weight: 600;
+      color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-table td {
+      padding: 14px 20px; font-size: 13px; color: var(--text);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { font-weight: 600; }
+    .compare-check { color: var(--green); }
+
+    /* Quick Start */
+    .code-block {
+      background: #0d0d1a; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8;
+      overflow-x: auto; white-space: pre;
+      color: var(--text-secondary);
+    }
+    .code-block .cmd { color: #22c55e; }
+    .code-block .comment { color: var(--text-muted); font-style: italic; }
+    .code-block .var { color: #f59e0b; }
+    .code-block .str { color: #a78bfa; }
+    .quickstart-grid { display: grid; gap: 24px; max-width: 800px; margin: 0 auto; }
+    .quickstart-step {
+      display: grid; grid-template-columns: 40px 1fr;
+      gap: 16px; align-items: start;
+    }
+    .quickstart-step .step-num { flex-shrink: 0; }
+
+    /* Footer */
+    footer {
+      padding: 48px 0; border-top: 1px solid var(--border);
+      text-align: center; color: var(--text-muted); font-size: 13px;
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* FAQ */
+    .faq-list { max-width: 720px; margin: 0 auto; display: grid; gap: 16px; }
+    .faq-item {
+      padding: 24px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border);
+    }
+    .faq-item h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .faq-item p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* Stats row */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px; max-width: 900px; margin: 0 auto;
+    }
+    .stat-card {
+      padding: 28px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border);
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 28px; font-weight: 800;
+      background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-card .lbl { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Tier grid */
+    .tier-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .tier-card {
+      padding: 28px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border);
+      text-align: center;
+    }
+    .tier-card h4 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+    .tier-card .tier-tag {
+      display: inline-block; padding: 2px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      background: rgba(99, 102, 241, 0.1); color: var(--accent-light);
+      margin-bottom: 12px;
+    }
+    .tier-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .mobile-menu-btn { display: block; }
+      .hero { padding: 120px 0 60px; }
+      .hero-stats { gap: 24px; }
+      .hero-stat .number { font-size: 24px; }
+      section { padding: 60px 0; }
+      .features-grid { grid-template-columns: 1fr; }
+      .benchmark-table { font-size: 12px; }
+      .benchmark-table th, .benchmark-table td { padding: 10px 12px; }
+      .pipeline { padding: 20px; font-size: 11px; }
+      .overview-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-logo">
+        <img src="./logo.svg" alt="agentmemory">
+      </a>
+      <ul class="nav-links">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#benchmarks">Benchmarks</a></li>
+        <li><a href="#quick-start">Quick Start</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a href="https://mirofish.my/" class="nav-cta">Get Started &rarr;</a>
+      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('show')">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">⭐ 14.2k stars &middot; #1 Memory for AI Coding Agents</div>
+      <h1>Your coding agent <span>remembers everything</span>. No more re-explaining.</h1>
+      <p>
+        Persistent memory for Claude Code, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, and any MCP client.
+        Built on the iii engine. 95.2% retrieval R@5. 92% fewer tokens. Zero external databases.
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="number">95.2%</div>
+          <div class="label">Retrieval R@5</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">92%</div>
+          <div class="label">Fewer Tokens</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">53</div>
+          <div class="label">MCP Tools</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">12</div>
+          <div class="label">Auto Hooks</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number">0</div>
+          <div class="label">External DBs</div>
+        </div>
+      </div>
+      <div class="hero-buttons">
+        <a href="https://mirofish.my/" class="btn-primary">Get Started &rarr;</a>
+        <a href="https://github.com/rohitg00/agentmemory" class="btn-secondary">View on GitHub &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section>
+    <div class="container">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="num">~1,900</div>
+          <div class="lbl">Tokens / Session</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">$10</div>
+          <div class="lbl">Cost / Year</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">950+</div>
+          <div class="lbl">Tests Passing</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">118</div>
+          <div class="lbl">Source Files</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">34</div>
+          <div class="lbl">KV Scopes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overview -->
+  <section id="overview">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Overview</div>
+        <h2 class="section-title">Works with every agent</h2>
+        <p class="section-desc">
+          agentmemory works with any agent that supports hooks, MCP, or REST API. All agents share the same memory server.
+          One server, memories shared across all of them.
+        </p>
+      </div>
+      <div class="agent-grid">
+        <div class="agent-item">Claude Code</div>
+        <div class="agent-item">Codex CLI</div>
+        <div class="agent-item">Cursor</div>
+        <div class="agent-item">Gemini CLI</div>
+        <div class="agent-item">OpenClaw</div>
+        <div class="agent-item">Hermes</div>
+        <div class="agent-item">OpenCode</div>
+        <div class="agent-item">Cline</div>
+        <div class="agent-item">Goose</div>
+        <div class="agent-item">Aider</div>
+        <div class="agent-item">Claude Desktop</div>
+        <div class="agent-item">Windsurf</div>
+        <div class="agent-item">Roo Code</div>
+        <div class="agent-item">Kilo Code</div>
+        <div class="agent-item">pi</div>
+        <div class="agent-item">OpenHuman</div>
+        <div class="agent-item">+ any MCP client</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Statement -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Why agentmemory</h2>
+        <p class="section-desc">
+          Every coding agent forgets everything when the session ends. You waste the first 5 minutes of every session
+          re-explaining your stack. agentmemory runs in the background and eliminates that entirely.
+        </p>
+      </div>
+      <div class="overview-grid">
+        <div class="overview-card">
+          <div class="icon">🧠</div>
+          <h3>Automatic Capture</h3>
+          <p>Every tool use recorded via hooks. Zero manual effort. Session 1 sets up JWT auth — Session 2 already knows your stack.</p>
+        </div>
+        <div class="overview-card">
+          <div class="icon">🔍</div>
+          <h3>Semantic Search</h3>
+          <p>BM25 + vector + knowledge graph with RRF fusion. Search "database performance" and find "N+1 query fix" — keyword matching can't do that.</p>
+        </div>
+        <div class="overview-card">
+          <div class="icon">🔒</div>
+          <h3>Privacy First</h3>
+          <p>API keys, secrets, and private tags stripped before storage. Self-hosted by default. Local embeddings are free and offline.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Capabilities</div>
+        <h2 class="section-title">Key Features</h2>
+        <p class="section-desc">
+          Memory evolution, auto-forgetting, knowledge graphs, team memory, and more.
+          Everything your agent needs to remember — without the overhead.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🔄</div>
+          <h3>Automatic Capture</h3>
+          <p>Every tool use recorded via hooks — zero manual effort. 12 hooks covering the full session lifecycle.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎯</div>
+          <h3>Semantic Search</h3>
+          <p>BM25 + vector + knowledge graph with RRF fusion. Find what you need, even when keywords don't match.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📈</div>
+          <h3>Memory Evolution</h3>
+          <p>Versioning, supersession, and relationship graphs. Memories grow and adapt with your project.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⏰</div>
+          <h3>Auto-Forgetting</h3>
+          <p>TTL expiry, contradiction detection, importance eviction. Stale memories auto-evict. Frequently accessed ones strengthen.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔐</div>
+          <h3>Privacy First</h3>
+          <p>API keys, secrets, and private tags stripped before storage. Self-hosted by default. No data leaves your machine.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🩺</div>
+          <h3>Self-Healing</h3>
+          <p>Circuit breaker, provider fallback chain, and health monitoring. Your memory stays reliable.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔗</div>
+          <h3>Claude Bridge</h3>
+          <p>Bi-directional sync with MEMORY.md. Built-in memory and agentmemory stay in sync automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🌐</div>
+          <h3>Knowledge Graph</h3>
+          <p>Entity extraction with BFS traversal. Understand relationships between code, files, and concepts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">👥</div>
+          <h3>Team Memory</h3>
+          <p>Namespaced shared and private memory across team members. Collaborate without context loss.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📋</div>
+          <h3>Citation Provenance</h3>
+          <p>Trace any memory back to source observations. Know exactly where every fact came from.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📸</div>
+          <h3>Git Snapshots</h3>
+          <p>Version, rollback, and diff memory state. Never lose a memory you've captured.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📺</div>
+          <h3>Real-Time Viewer</h3>
+          <p>Live observation stream, session explorer, memory browser, and knowledge graph viz on port 3113.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Architecture</div>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-desc">
+          Memory pipeline with 4-tier consolidation, inspired by how human brains process memory.
+        </p>
+      </div>
+
+      <div class="pipeline">
+<span class="highlight">PostToolUse</span> hook fires
+  <span class="arrow">-></span> SHA-256 dedup (5min window)
+  <span class="arrow">-></span> Privacy filter (strip secrets, API keys)
+  <span class="arrow">-></span> Store raw observation
+  <span class="arrow">-></span> LLM compress <span class="arrow">-></span> structured facts + concepts + narrative
+  <span class="arrow">-></span> Vector embedding (6 providers + local)
+  <span class="arrow">-></span> Index in BM25 + vector
+
+<span class="highlight">Stop / SessionEnd</span> hook fires
+  <span class="arrow">-></span> Summarize session
+  <span class="arrow">-></span> Knowledge graph extraction
+  <span class="arrow">-></span> Slot reflection
+
+<span class="highlight">SessionStart</span> hook fires
+  <span class="arrow">-></span> Load project profile (top concepts, files, patterns)
+  <span class="arrow">-></span> Hybrid search (BM25 + vector + graph)
+  <span class="arrow">-></span> Token budget (default: 2000 tokens)
+  <span class="arrow">-></span> Inject into conversation
+      </div>
+
+      <div class="section-header" style="margin: 64px 0 32px;">
+        <h3 class="section-title" style="font-size: 24px;">4-Tier Memory Consolidation</h3>
+      </div>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <div class="tier-tag">Working</div>
+          <h4>Short-Term Memory</h4>
+          <p>Raw observations from tool use. Captured in real-time as your agent works.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-tag">Episodic</div>
+          <h4>Session Summaries</h4>
+          <p>Compressed session summaries. "What happened" during each session.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-tag">Semantic</div>
+          <h4>Extracted Facts</h4>
+          <p>Extracted facts and patterns. "What I know" about your project and stack.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-tag">Procedural</div>
+          <h4>Decision Patterns</h4>
+          <p>Workflows and decision patterns. "How to do it" — captured from your agent's behavior.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 32px; text-align: center; color: var(--text-muted); font-size: 14px;">
+        Memories decay over time (Ebbinghaus curve). Frequently accessed memories strengthen. Stale memories auto-evict. Contradictions are detected and resolved.
+      </div>
+    </div>
+  </section>
+
+  <!-- What Gets Captured -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What Gets Captured</h2>
+        <p class="section-desc">12 lifecycle hooks covering every moment of your agent's session.</p>
+      </div>
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Hook</th>
+            <th>Captures</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SessionStart</td>
+            <td>Project path, session ID</td>
+          </tr>
+          <tr>
+            <td>UserPromptSubmit</td>
+            <td>User prompts (privacy-filtered)</td>
+          </tr>
+          <tr>
+            <td>PreToolUse</td>
+            <td>File access patterns + enriched context</td>
+          </tr>
+          <tr>
+            <td>PostToolUse</td>
+            <td>Tool name, input, output</td>
+          </tr>
+          <tr>
+            <td>PostToolUseFailure</td>
+            <td>Error context</td>
+          </tr>
+          <tr>
+            <td>PreCompact</td>
+            <td>Re-injects memory before compaction</td>
+          </tr>
+          <tr>
+            <td>SubagentStart/Stop</td>
+            <td>Sub-agent lifecycle</td>
+          </tr>
+          <tr>
+            <td>Stop / SessionEnd</td>
+            <td>End-of-session summary and complete marker</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Benchmarks -->
+  <section id="benchmarks">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Performance</div>
+        <h2 class="section-title">Benchmarks</h2>
+        <p class="section-desc">
+          LongMemEval-S (ICLR 2025, 500 questions). 95.2% retrieval accuracy with local embeddings — free and offline.
+        </p>
+      </div>
+
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Retrieval Accuracy</th>
+            <th>R@5</th>
+            <th>R@10</th>
+            <th>MRR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>agentmemory</td>
+            <td class="benchmark-highlight">95.2%</td>
+            <td class="benchmark-highlight">98.6%</td>
+            <td class="benchmark-highlight">88.2%</td>
+          </tr>
+          <tr>
+            <td>BM25-only fallback</td>
+            <td>86.2%</td>
+            <td>94.6%</td>
+            <td>71.5%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="height: 24px;"></div>
+
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Token Savings</th>
+            <th>Approach</th>
+            <th>Tokens/Yr</th>
+            <th>Cost/Yr</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Paste full context</td>
+            <td>—</td>
+            <td>19.5M+</td>
+            <td>Impossible</td>
+          </tr>
+          <tr>
+            <td>LLM-summarized</td>
+            <td>—</td>
+            <td>~650K</td>
+            <td>~$500</td>
+          </tr>
+          <tr>
+            <td>agentmemory</td>
+            <td>—</td>
+            <td class="benchmark-highlight">~170K</td>
+            <td class="benchmark-highlight">~$10</td>
+          </tr>
+          <tr>
+            <td>agentmemory + local embeddings</td>
+            <td>—</td>
+            <td class="benchmark-highlight">~170K</td>
+            <td class="benchmark-highlight">$0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="benchmark-note">
+        Embedding model: <strong>all-MiniLM-L6-v2</strong> (local, free, no API key).
+        Full reports: LongMemEval, QUALITY, SCALE — and competitor comparison vs mem0, Letta, Khoj, claude-mem, Hippo.
+      </div>
+    </div>
+  </section>
+
+  <!-- vs Competitors -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Comparison</div>
+        <h2 class="section-title">vs Competitors</h2>
+        <p class="section-desc">
+          agentmemory vs mem0, Letta, and built-in memory. 95.2% retrieval R@5, zero external deps, multi-agent support.
+        </p>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>agentmemory</th>
+              <th>mem0</th>
+              <th>Letta / MemGPT</th>
+              <th>Built-in (CLAUDE.md)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Type</td>
+              <td>Memory engine + MCP server</td>
+              <td>Memory layer API</td>
+              <td>Full agent runtime</td>
+              <td>Static file</td>
+            </tr>
+            <tr>
+              <td>Retrieval R@5</td>
+              <td class="benchmark-highlight">95.2%</td>
+              <td>68.5%</td>
+              <td>83.2%</td>
+              <td>N/A (grep)</td>
+            </tr>
+            <tr>
+              <td>Auto-capture</td>
+              <td class="compare-check">12 hooks (zero manual effort)</td>
+              <td>Manual add() calls</td>
+              <td>Agent self-edits</td>
+              <td>Manual editing</td>
+            </tr>
+            <tr>
+              <td>Search</td>
+              <td>BM25 + Vector + Graph (RRF)</td>
+              <td>Vector + Graph</td>
+              <td>Vector (archival)</td>
+              <td>Loads everything</td>
+            </tr>
+            <tr>
+              <td>Multi-agent</td>
+              <td class="compare-check">MCP + REST + leases</td>
+              <td>API (no coordination)</td>
+              <td>Within Letta only</td>
+              <td>Per-agent files</td>
+            </tr>
+            <tr>
+              <td>External deps</td>
+              <td class="benchmark-highlight">None (SQLite + iii)</td>
+              <td>Qdrant / pgvector</td>
+              <td>Postgres + vector DB</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td>Token efficiency</td>
+              <td class="benchmark-highlight">~1,900 tokens/session ($10/yr)</td>
+              <td>Varies</td>
+              <td>Core memory in context</td>
+              <td>22K+ at 240 obs</td>
+            </tr>
+            <tr>
+              <td>Real-time viewer</td>
+              <td class="compare-check">Yes (port 3113)</td>
+              <td>Cloud dashboard</td>
+              <td>Cloud dashboard</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Self-hosted</td>
+              <td class="compare-check">Yes (default)</td>
+              <td>Optional</td>
+              <td>Optional</td>
+              <td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Retrieval</div>
+        <h2 class="section-title">Triple-Stream Search</h2>
+        <p class="section-desc">
+          Three signals fused with Reciprocal Rank Fusion. BM25, vector embeddings, and knowledge graph traversal working together.
+        </p>
+      </div>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <div class="tier-tag">Stream 1</div>
+          <h4>BM25</h4>
+          <p>Stemmed keyword matching with synonym expansion. Always on. Supports Greek, Cyrillic, Hebrew, Arabic, and CJK.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-tag">Stream 2</div>
+          <h4>Vector</h4>
+          <p>Cosine similarity over dense embeddings. 6 providers including local (free, offline). Switch or combine providers.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-tag">Stream 3</div>
+          <h4>Knowledge Graph</h4>
+          <p>Graph traversal via entity matching. Understand relationships between concepts, code, and decisions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MCP Tools -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">MCP Server</div>
+        <h2 class="section-title">53 MCP Tools</h2>
+        <p class="section-desc">
+          The most comprehensive MCP memory toolkit for any agent. 53 tools, 6 resources, 3 prompts, and 4 skills.
+        </p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool-item">
+          <div class="tool-name">memory_recall</div>
+          <div class="tool-desc">Search past observations</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_save</div>
+          <div class="tool-desc">Save an insight, decision, or pattern</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_smart_search</div>
+          <div class="tool-desc">Hybrid semantic + keyword search</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_sessions</div>
+          <div class="tool-desc">List recent sessions</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_profile</div>
+          <div class="tool-desc">Project profile (concepts, files, patterns)</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_export</div>
+          <div class="tool-desc">Export all memory data</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_relations</div>
+          <div class="tool-desc">Query relationship graph</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_consolidate</div>
+          <div class="tool-desc">Run 4-tier consolidation</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_audit</div>
+          <div class="tool-desc">Audit trail of operations</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_snapshot_create</div>
+          <div class="tool-desc">Git-versioned snapshot</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_team_share</div>
+          <div class="tool-desc">Share with team members</div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-name">memory_signal_send</div>
+          <div class="tool-desc">Inter-agent messaging</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section id="quick-start">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Install</div>
+        <h2 class="section-title">Quick Start</h2>
+        <p class="section-desc">
+          Get agentmemory running in 30 seconds. One command, zero dependencies.
+        </p>
+      </div>
+      <div class="quickstart-grid">
+        <div class="quickstart-step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Install globally</h4>
+            <p>Install agentmemory once. The bare <code style="color: var(--accent-light);">agentmemory</code> command works everywhere.</p>
+            <div class="code-block"><span class="cmd">npm install -g @agentmemory/agentmemory</span></div>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Start the server</h4>
+            <p>Starts the memory server on port 3111. Auto-starts the iii engine and real-time viewer.</p>
+            <div class="code-block"><span class="cmd">agentmemory</span></div>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Seed sample data</h4>
+            <p>Seeds 3 realistic sessions and runs semantic searches. See it find "N+1 query fix" when you search "database performance".</p>
+            <div class="code-block"><span class="cmd">agentmemory demo</span></div>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">4</div>
+          <div>
+            <h4>Wire your agent</h4>
+            <p>Connect agentmemory to Claude Code, Cursor, Gemini CLI, or any MCP client.</p>
+            <div class="code-block"><span class="cmd">agentmemory connect claude-code</span></div>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">5</div>
+          <div>
+            <h4>Open the viewer</h4>
+            <p>Watch the memory build live. Session explorer, memory browser, knowledge graph visualization.</p>
+            <div class="code-block"><span class="comment"># Open in your browser</span>
+http://localhost:3113</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 48px;">
+        <a href="https://mirofish.my/" class="btn-primary">Get Started &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MCP Config -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Integration</div>
+        <h2 class="section-title">Add to Any Agent</h2>
+        <p class="section-desc">
+          One MCP config block works across Cursor, Claude Desktop, Cline, Roo Code, Windsurf, Gemini CLI, and more.
+        </p>
+      </div>
+      <div class="code-block"><span class="comment">// Add to your agent's mcpServers config</span>
+{
+  <span class="var">"mcpServers"</span>: {
+    <span class="var">"agentmemory"</span>: {
+      <span class="var">"command"</span>: <span class="str">"npx"</span>,
+      <span class="var">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@agentmemory/mcp"</span>],
+      <span class="var">"env"</span>: {
+        <span class="var">"AGENTMEMORY_URL"</span>: <span class="str">"http://localhost:3111"</span>
+      }
+    }
+  }
+}</div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-desc">The fastest answers to the questions people ask first.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h4>What is agentmemory?</h4>
+          <p>agentmemory is the #1 persistent memory for AI coding agents. It silently captures everything your agent does, compresses it into searchable memory, and injects the right context when the next session starts. No more re-explaining your stack.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Which agents does it work with?</h4>
+          <p>Claude Code, Cursor, Gemini CLI, Codex CLI, Hermes, OpenClaw, pi, OpenCode, Cline, Goose, Aider, Claude Desktop, Windsurf, Roo Code, Kilo Code, OpenHuman, and any MCP client. All agents share the same memory server.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How is it different from built-in agent memory?</h4>
+          <p>Built-in memory (CLAUDE.md, Cursor notepads) caps at 200 lines and loads everything into context. agentmemory has unlimited scale, uses BM25 + vector + graph search with top-K retrieval, costs ~1,900 tokens per session instead of 22K+, and works across agents.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Does it require external databases?</h4>
+          <p>No. agentmemory uses SQLite + the iii engine. Zero external dependencies. No Postgres, no Redis, no Qdrant. Self-hosted by default.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How much does it cost to run?</h4>
+          <p>With local embeddings (all-MiniLM-L6-v2), the embedding provider is free and fully offline. The total cost is approximately $10/year with cloud embeddings or $0/year with local embeddings.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How do I install it?</h4>
+          <p>Run <code style="color: var(--accent-light);">npm install -g @agentmemory/agentmemory</code>, then <code style="color: var(--accent-light);">agentmemory</code> to start the server. Or use <code style="color: var(--accent-light);">npx @agentmemory/agentmemory</code> for a no-install option.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>
+        agentmemory — <a href="https://github.com/rohitg00/agentmemory">GitHub</a> &middot;
+        <a href="https://agent-memory.dev">agent-memory.dev</a> &middot;
+        Apache-2.0 License
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
